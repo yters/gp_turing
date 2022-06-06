@@ -251,7 +251,7 @@ if __name__ == "__main__":
                 fitness_steps = 0 # Reset fitness counter.
                 best_fitness = float('inf')
                 found = False
-                max_generations = 1000 # Evolve for a set number of generations.
+                max_generations = 10000 # Evolve for a set number of generations.
                 for i in range(max_generations):
                     # Create the new generation.
                     for _ in range(gen_size):
