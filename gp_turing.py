@@ -277,6 +277,7 @@ if __name__ == "__main__":
                         print('success!')
                         code_str = ''.join(pop[0])
                         hof_file.write(str(param) + ' ' + str(trial) + ' ' + str(fitness_steps) + ' ' + code_str + '\n')
+                        hof_file.flush()
                         inductee = (param, trial, fitness_steps, code_str)
                         break
             
@@ -287,6 +288,7 @@ if __name__ == "__main__":
                 trials_log += [fitness_steps]
             avg_steps = sum(trials_log)/float(num_trials)
             stats_file.write(str(avg_steps) + '\n')
+            stats_file.flush()
             experiments_log += [avg_steps]
     except KeyboardInterrupt:
         pass
