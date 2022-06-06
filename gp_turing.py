@@ -224,7 +224,7 @@ def fitness(ind, target):
 
 if __name__ == "__main__":
     # Setup the experiments
-    experiments = list(range(1,5))
+    experiments = []
     experiments_log = []
     num_trials = 10
     param = 0
@@ -240,6 +240,7 @@ if __name__ == "__main__":
         everything_is_fine = True
         while everything_is_fine:
             param += 1
+            experiments += [param]
             target = list(range(param))
             trials_log = [] # Log to calculate stats.
             for trial in range(num_trials):
