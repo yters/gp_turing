@@ -223,65 +223,77 @@ def fitness(ind, target):
         return float('inf')
 
 if __name__ == "__main__":
+    # Setup the experiments
     experiments = list(range(1,5))
     experiments_log = []
-    hof = []
     num_trials = 10
-    for param in experiments:
-        target = list(range(param))
-        trials_log = [] # Log to calculate stats.
-        for trial in range(num_trials):
-            pop_size = 100 # The population size.  Each generation, population is dropped back to this size.
-            pop = [[]] * pop_size # Each member of the population starts empty.
-            gen_size = 100 # Number of new individuals to create each generation.
+    param = 0
 
-            fitness_steps = 0 # Reset fitness counter.
-            best_fitness = float('inf')
-            found = False
-            max_generations = 1000 # Evolve for a set number of generations.
-            for i in range(max_generations):
-                # Create the new generation.
-                for _ in range(gen_size):
-                    child = mutate(crossover(choice(pop), choice(pop)))
-                    pop += [child]
-        
-                # Cull the population.
-                pop = sorted(pop, key=lambda x: fitness(x, target=target))[:pop_size]
-        
-                # Print out new advances in the population.
-                if fitness(pop[0], target) < best_fitness:
-                    best_fitness = fitness(pop[0], target=target)
-                    print('---------')
-                    print('iteration: ' + str(i))
-                    print('trial: ' + str(trial))
-                    print('target: ' + '|'.join([str(d) for d in target]))
-                    print('fitness: ' + str(best_fitness))
-                    print('length: ' + str(len(pop[0])))
-                    print('code: ' + ''.join(pop[0]))
-                    print('output: ' + '|'.join([str(d) for d in eval(pop[0])]))
-        
-                # Check for success finding the target.
-                if fitness(pop[0], target) == 0:
-                    found = True
-                    print('success!')
-                    hof += [(param, trial, fitness_steps, ''.join(pop[0]))]
-                    break
-        
-            if not found:
-                print('after ' + str(max_generations) + ' generations did not find this solution: ' + str(target))
-        
-            print('number of execution steps spent evolving: ' + str(fitness_steps))
-            trials_log += [fitness_steps]
-        avg_steps = sum(trials_log)/float(num_trials)
-        experiments_log += [avg_steps]
-        
+    # Setup results files
+    open('hof.txt', 'w').close()
+    hof_file = open('hof.txt', 'a')
+    open('stats.txt', 'w').close()
+    stats_file = open('stats.txt', 'a')
+    
+    # Run experiments indefinitely until keyboard interrupt is called.
+    try:
+        while True:
+            param += 1
+            target = list(range(param))
+            trials_log = [] # Log to calculate stats.
+            for trial in range(num_trials):
+                pop_size = 100 # The population size.  Each generation, population is dropped back to this size.
+                pop = [[]] * pop_size # Each member of the population starts empty.
+                gen_size = 100 # Number of new individuals to create each generation.
+    
+                fitness_steps = 0 # Reset fitness counter.
+                best_fitness = float('inf')
+                found = False
+                max_generations = 1000 # Evolve for a set number of generations.
+                for i in range(max_generations):
+                    # Create the new generation.
+                    for _ in range(gen_size):
+                        child = mutate(crossover(choice(pop), choice(pop)))
+                        pop += [child]
+            
+                    # Cull the population.
+                    pop = sorted(pop, key=lambda x: fitness(x, target=target))[:pop_size]
+            
+                    # Print out new advances in the population.
+                    if fitness(pop[0], target) < best_fitness:
+                        best_fitness = fitness(pop[0], target=target)
+                        print('---------')
+                        print('iteration: ' + str(i))
+                        print('trial: ' + str(trial))
+                        print('target: ' + '|'.join([str(d) for d in target]))
+                        print('fitness: ' + str(best_fitness))
+                        print('length: ' + str(len(pop[0])))
+                        print('code: ' + ''.join(pop[0]))
+                        print('output: ' + '|'.join([str(d) for d in eval(pop[0])]))
+            
+                    # Check for success finding the target.
+                    if fitness(pop[0], target) == 0:
+                        found = True
+                        print('success!')
+                        code_str = ''.join(pop[0])
+                        hof_file.write(str(param) + ' ' + str(trial) + ' ' + str(fitness_steps) + ' ' + code_str + '\n')
+                        inductee = (param, trial, fitness_steps, code_str)
+                        break
+            
+                if not found:
+                    print('after ' + str(max_generations) + ' generations did not find this solution: ' + str(target))
+            
+                print('number of execution steps spent evolving: ' + str(fitness_steps))
+                trials_log += [fitness_steps]
+            avg_steps = sum(trials_log)/float(num_trials)
+            stats_file.write(str(avg_steps) + '\n')
+            experiments_log += [avg_steps]
+    except KeyboardInterrupt:
+        pass
+
+    hof_file.close()
+    stats_file.close()
+    
     for param, avg_steps in zip(experiments, experiments_log):
         print('for experiment param ' + str(param) + ' took average of ' + str(int(avg_steps)) + ' steps to find solution.')
 
-    with open('stats.txt', 'w') as f:
-        for avg_steps in experiments_log:
-            f.write(str(avg_steps) + '\n')
-        
-    with open('hof.txt', 'w') as f:
-        for param, trial, fitness_steps, code in hof:
-            f.write(str(param) + ' ' + str(trial) + ' ' + str(fitness_steps) + ' ' + code + '\n')

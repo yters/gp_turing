@@ -2,7 +2,9 @@
 
 The script `gp_turing.py` illustrates the evolution of a Turing complete program to count sequential numbers.  The method of evolution involves both mutation and sharing of genetic information between members of the population to cover the full range of known genetic operators in biological evolutionary theory.  
 
-To try out the program, simply run the script using Python3.  The script will run a set of experiments showing the evolution of longer and longer numerical sequences.  At the end, it will print a summary of average execution steps needed for each experiment.  It will also create two output files: `stats.txt` and `hof.txt`.
+To try out the program, simply run the script using Python3.  The script will run a set of experiments showing the evolution of longer and longer numerical sequences, until you press Ctrl-C.  
+
+At the end, it will print a summary of average execution steps needed for each experiment.  It will also create two output files: `stats.txt` and `hof.txt`.
 
 The `stats.txt` file contains the average steps for each experiment.
 
