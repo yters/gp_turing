@@ -237,7 +237,8 @@ if __name__ == "__main__":
     
     # Run experiments indefinitely until keyboard interrupt is called.
     try:
-        while True:
+        everything_is_fine = True
+        while everything_is_fine:
             param += 1
             target = list(range(param))
             trials_log = [] # Log to calculate stats.
@@ -283,6 +284,7 @@ if __name__ == "__main__":
             
                 if not found:
                     print('after ' + str(max_generations) + ' generations did not find this solution: ' + str(target))
+                    everything_is_fine = False
             
                 print('number of execution steps spent evolving: ' + str(fitness_steps))
                 trials_log += [fitness_steps]
