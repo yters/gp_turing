@@ -289,6 +289,8 @@ if __name__ == "__main__":
             
                 print('number of execution steps spent evolving: ' + str(fitness_steps))
                 trials_log += [fitness_steps]
+                if not everything_is_fine:
+                    break
             avg_steps = sum(trials_log)/float(num_trials)
             stats_file.write(str(avg_steps) + '\n')
             stats_file.flush()
