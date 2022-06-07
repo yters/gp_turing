@@ -1,0 +1,11 @@
+png('ohno.png')
+stats <- unlist(read.table('stats.txt'))
+plot(stats, type='l', lwd=6, ylab='steps', xlab='sequence length')
+title('Exponential Evolution Time As Sequence Grows')
+tmp<-dev.off()
+
+png('ohno_log.png')
+stats <- unlist(read.table('stats.txt'))
+plot(log(stats, 10), type='l', lwd=6, ylab=expression(log[10](steps)), xlab='sequence length')
+title('Exponential Evolution Time As Sequence Grows')
+tmp<-dev.off()
