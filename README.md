@@ -11,3 +11,9 @@ The `stats.txt` file contains the average steps for each experiment.
 The `hof.txt` file is more interesting.  It contains the "Hall of Fame" of the winning individual for each trial.  One interesting thing to note is how the pointless code bloat increases as the target sequence length increases.  This shows a general problem with evolution of programs with random mutation.  Since random numbers don't know anything about programming, using randomness to generate the program inevitably adds junk, and this happens more often the longer the programs are evolved.
 
 For visualization, there is an R script `draw_ohno.r` that will create two plots to show the exponential time increase to evolve solutions as the sequence increases.
+
+Here is the plot of the exponential increase.
+![Graph showing exponential increase in time to evolve.](/ohno.png?raw=true "Exponential Evolution Time")
+
+And a logarithmic plot to show the rate is clearly logarithmic.
+![Graph showing exponential increase in time to evolve, with log of y axis.](/ohno.png?raw=true "Exponential Evolution Time (Log Graph)")
