@@ -9,10 +9,10 @@ import sys
 class Pm():
     def __init__(self, code = [], iput = []):
         # Setup the tapes, pointers and counters.
-        self.code_bitstring = [symbol for symbol in code]
-        self.data_bitstring = [0]
-        self.iput_bitstring = [b for b in iput]
-        self.oput_bitstring = []
+        self.code_tape = [symbol for symbol in code]
+        self.data_tape = [0]
+        self.iput_tape = [b for b in iput]
+        self.oput_tape = []
 
         self.code_pntr = 0
         self.data_pntr = 0
@@ -51,17 +51,17 @@ class Pm():
 
     # The following two random addition methods are used to generate random extensions to the code and data strings, to allow the generation of random programs.
     def add_random_symbol(self, jumping):
-        self.code_bitstring += [self.symbols[randint(0,len(self.symbols)-1-int(jumping))]]
+        self.code_tape += [self.symbols[randint(0,len(self.symbols)-1-int(jumping))]]
 
     def add_random_byte(self):
-        self.iput_bitstring += [randint(0,255)]
+        self.iput_tape += [randint(0,255)]
 
     # The following are the language commands.
     # Most commands only return True.  The two exceptions are the jump and input commands.  Reason being these commands can exceed the end of the code and input tape, respectively, requiring the addition of new information.
     def inc_data_ptr(self):
         self.data_pntr += 1
-        if self.data_pntr == len(self.data_bitstring):
-            self.data_bitstring += [0]
+        if self.data_pntr == len(self.data_tape):
+            self.data_tape += [0]
         return True
 
     def dec_data_ptr(self):
@@ -70,13 +70,13 @@ class Pm():
         return True
 
     def inc_byte(self):
-        if self.data_bitstring[self.data_pntr] < 255:
-            self.data_bitstring[self.data_pntr] = self.data_bitstring[self.data_pntr] + 1
+        if self.data_tape[self.data_pntr] < 255:
+            self.data_tape[self.data_pntr] = self.data_tape[self.data_pntr] + 1
         return True
 
     def dec_byte(self):
-        if self.data_bitstring[self.data_pntr] > 0:
-            self.data_bitstring[self.data_pntr] = self.data_bitstring[self.data_pntr] - 1
+        if self.data_tape[self.data_pntr] > 0:
+            self.data_tape[self.data_pntr] = self.data_tape[self.data_pntr] - 1
         return True
 
     # The jump and back commands are conditional.
@@ -85,37 +85,37 @@ class Pm():
     # This allows for conditional logic in the P'' language, similar to the IF ... THEN GOTO ... command in BASIC.
     def jump(self):
         self.left_brace_counter += 1
-        if self.data_bitstring[self.data_pntr] == 0:
+        if self.data_tape[self.data_pntr] == 0:
             while not self.left_brace_counter == 0:
-                if self.code_pntr + 1 >= len(self.code_bitstring):
+                if self.code_pntr + 1 >= len(self.code_tape):
                     return False
                 self.code_pntr += 1
-                if self.code_bitstring[self.code_pntr] == "[":
+                if self.code_tape[self.code_pntr] == "[":
                     self.left_brace_counter += 1
-                elif self.code_bitstring[self.code_pntr] == "]":
+                elif self.code_tape[self.code_pntr] == "]":
                     self.left_brace_counter -= 1
         return True
 
     def back(self):
         self.right_brace_counter += 1
-        if not self.data_bitstring[self.data_pntr] == 0:
+        if not self.data_tape[self.data_pntr] == 0:
             while not self.right_brace_counter == 0:
                 if self.code_pntr - 1 == 0:
                     return True
                 self.code_pntr -= 1
-                if self.code_bitstring[self.code_pntr] == "[":
+                if self.code_tape[self.code_pntr] == "[":
                     self.right_brace_counter -= 1
-                elif self.code_bitstring[self.code_pntr] == "]":
+                elif self.code_tape[self.code_pntr] == "]":
                     self.right_brace_counter += 1
         return True
 
     def oput(self):
-        self.oput_bitstring += [self.data_bitstring[self.data_pntr]]
+        self.oput_tape += [self.data_tape[self.data_pntr]]
         return True
 
     def iput(self):
-        if self.iput_pntr < len(self.iput_bitstring):
-            self.data_bitstring[self.data_pntr] = self.iput_bitstring[self.iput_pntr]
+        if self.iput_pntr < len(self.iput_tape):
+            self.data_tape[self.data_pntr] = self.iput_tape[self.iput_pntr]
             self.iput_pntr += 1
             return True
         return False
@@ -128,16 +128,16 @@ class Pm():
         self.code_pntr = 0
         jumping = False
         while True:
-            if self.code_pntr >= len(self.code_bitstring)-1:
+            if self.code_pntr >= len(self.code_tape)-1:
                 self.add_random_symbol(jumping)
-            if self.iput_pntr == len(self.iput_bitstring):
+            if self.iput_pntr == len(self.iput_tape):
                 self.add_random_byte()
 
-            if self.code_bitstring[self.code_pntr] == "E":
+            if self.code_tape[self.code_pntr] == "E":
                 break
             if jumping:
                 jumping = self.jump()
-            elif self.c2m[self.code_bitstring[self.code_pntr]]():
+            elif self.c2m[self.code_tape[self.code_pntr]]():
                 self.code_pntr += 1
             else:
                 jumping = True
@@ -211,14 +211,14 @@ def eval(ind):
             fitness_steps += 1
             next(tm_iter)
         except StopIteration:
-            return tm.oput_bitstring
+            return tm.oput_tape
     return None # Treat code like infinite loop that never returns
 
 # Return the code fitness.
 def fitness(ind, target):
-    oput_bitstring = eval(ind)
-    if oput_bitstring:
-        return sum([abs(o-n) for o, n in zip(oput_bitstring, target)]) + abs(len(target)-len(oput_bitstring))
+    oput_tape = eval(ind)
+    if oput_tape:
+        return sum([abs(o-n) for o, n in zip(oput_tape, target)]) + abs(len(target)-len(oput_tape))
     else:
         return float('inf')
 
