@@ -157,8 +157,7 @@ prob_add = 0.1
 prob_flip = 0.1
 prob_del = 0.1
 
-# Need an instance to accesss the symbols.
-pm = Pm()
+pm = Pm() # Need an instance to accesss the symbols.
 def mutate(ind):
     new_ind = []
     curr_pos = 0
@@ -197,7 +196,7 @@ def crossover(indA, indB):
 fitness_steps = 0 # Count how many program steps are needed to find the solution.
 max_fitness_steps_per_exec = 100 # Number of fitness steps each program is allowed to run.
 
-# Target defaults to counting from 0 to 2, but allows an end to be set by comamndline for experimenting.
+# Evaluate the code sequence for set number of steps, and return the output.
 def eval(ind):
     global fitness_steps
     # Initialize generator to run code.
@@ -214,16 +213,16 @@ def eval(ind):
             return tm.oput_tape
     return None # Treat code like infinite loop that never returns
 
-# Return the code fitness.
+# Return the fitness of the code's output after evaluation.
 def fitness(ind, target):
     oput_tape = eval(ind)
     if oput_tape:
         return sum([abs(o-n) for o, n in zip(oput_tape, target)]) + abs(len(target)-len(oput_tape))
     else:
-        return float('inf')
+        return float('inf') # Infinite loops are infinitely bad.
 
 if __name__ == "__main__":
-    # Setup the experiments
+    # Initialize the experiments' datastructures and parameters.
     experiments = []
     experiments_log = []
     num_trials = 10
