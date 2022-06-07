@@ -16,6 +16,8 @@ Here is the plot of the exponential increase.
 
 ![Graph showing exponential increase in time to evolve.](/ohno.png?raw=true "Exponential Evolution Time")
 
-And a logarithmic plot to show the rate is clearly logarithmic.
+And a logarithmic plot to show the rate is clearly exponential. If a logarithmic plot shows a straight line, then the actual trend is exponential.  The chart shows a straight line, meaning for each increment in sequence length the evolutionary algorithm doubles the time to find a program to generate the sequence.
 
 ![Graph showing exponential increase in time to evolve, with log of y axis.](/ohno_log.png?raw=true "Exponential Evolution Time (Log Graph)")
+
+The big takeaway is that evolutionary algorithms that use all known evolutionary mechanisms are unable to solve an extremely simple task in polynomial time.  This is bad news for evolution explaining the variety of life.
